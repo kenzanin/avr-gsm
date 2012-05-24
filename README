@@ -1,0 +1,2 @@
+This library is for interfacing avr microcontrollers with GSM modules.
+Library has feautures like Send and Recieving SMS, work with RTC, USD commands and etc,.
