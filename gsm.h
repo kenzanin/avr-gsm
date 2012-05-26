@@ -19,19 +19,18 @@
 #include "global.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <my-string.h>
 #include <util/delay.h>
 #include "rprintf.h"
 #include "uart2.h"
 #include "lcd.h"
 
-
 // Structers	
 typedef struct struct_sms{
-	char body[50];
-	char number[15];
+	char body[160];
+	char number[20];
 	char date[25];
 	char stat;
 }SMS;
@@ -54,23 +53,19 @@ void gsm_debug( char *command, void(*sendByte_func)(unsigned char c) );
 // Send AT command to module
 int gsm_command(char *command );
 
+// ---------------------------- SMS Functions ----------------------
 // Going GSM module in text mode (at+cmgf=1)
 void gsm_text_sms(void);
 
-// Send sms to specific number, return RefNum of SMS
-int gsm_send_sms(char *number, char *text);
-
-// send sms and check delivery report, if not delivered try again
-int gsm_send_sms2( char *number, char *text, int try_num );
-
-// Cehck SMS delivery report, return TRUE of FALSE
-int gsm_check_delivery( int refnum );
+// Send sms function
+int gsm_send_sms( char *number, char *text, int try_num );
 
 // Read specific sms
 int gsm_read_sms( int index, SMS *sms );
 
-// Check new sms and return number of new SMSes, also fill new sms indexes in *index pointer
-int gsm_check_new_sms( char *index );
+// Check new sms and return True or False,
+// This function return one new sms in given buffer
+int gsm_check_new_sms( SMS *sms );
 
 // Delete sms
 int gsm_del_sms( int index );
@@ -102,11 +97,20 @@ int gsm_str2rtc( char *time_str, GSM_RTC *time );
 // for example irancell get credit command is *141*1#
 int gsm_usd_command( char *cmd, char *response );
 
+int gsm_read_token( char *src, char *dest, char lenght, char nToken, char *delimiter );
+
+void gsm_remove_char( char *dest, char *src, char c );
+
 // Read a line from uart buffer
-int gsm_readline( char *str );
+int gsm_readline( char *str, int lenght );
+
+// Flush uart buffer
+void gsm_flush_buffer( void );
 
 // Initial rprintf function for send bytes to uart
 void gsm_rprintf_init( void );
 
+
+void gsm_dummy_print( char *str );
 #endif
 
